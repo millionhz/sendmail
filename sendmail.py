@@ -41,7 +41,6 @@ def sendmail(sender, recipient, mail_from, subject, body, dkim_conf, tls=True):
     msg.set_content(body)
 
     if dkim_conf:
-
         msg_bytes = msg.as_bytes()
 
         dkim_header = dkim.sign(
@@ -60,8 +59,10 @@ def sendmail(sender, recipient, mail_from, subject, body, dkim_conf, tls=True):
         helo_domain = domain_from_address(mail_from)
 
         if tls:
-            smtp.ehlo(helo_domain)
-            smtp.starttls()
+            _, exts = smtp.ehlo(helo_domain)
+            if 'STARTTLS' in exts.decode():
+                print('Initiating STARTTLS')
+                smtp.starttls()
 
         smtp.ehlo(helo_domain)
         print('Sending...')
