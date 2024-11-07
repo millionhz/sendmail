@@ -25,7 +25,7 @@ def get_mx(address):
     return str(records[0].exchange)
 
 
-def sendmail(sender, recipient, mail_from, subject, body, dkim_conf, tls=True):
+def sendmail(sender, recipient, mail_from, subject, body, dkim_conf, tls=True, dsn=False):
     mx = get_mx(recipient)
 
     # create mail
@@ -66,7 +66,12 @@ def sendmail(sender, recipient, mail_from, subject, body, dkim_conf, tls=True):
 
         smtp.ehlo(helo_domain)
         print('Sending...')
-        smtp.send_message(msg, mail_from, [recipient])
+
+        if dsn:
+            smtp.send_message(msg, mail_from, [recipient], mail_options=['RET=HDRS', f'ENVID={
+                int(random.random() * 10e6)}'], rcpt_options=['NOTIFY=SUCCESS,FAILURE,DELAY'])
+        else:
+            smtp.send_message(msg, mail_from, [recipient])
 
 
 if __name__ == '__main__':
