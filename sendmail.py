@@ -56,10 +56,10 @@ def sendmail(sender, recipient, mail_from, subject, body, dkim_conf, tls=True, d
     print(msg)
 
     with smtplib.SMTP(mx) as smtp:
-        helo_domain = domain_from_address(mail_from)
+        helo_domain = "sender." + domain_from_address(mail_from)
 
         if tls:
-            _, exts = smtp.ehlo(helo_domain)
+            _, exts = smtp.ehlo()
             if 'STARTTLS' in exts.decode():
                 print('Initiating STARTTLS')
                 smtp.starttls()
@@ -68,8 +68,8 @@ def sendmail(sender, recipient, mail_from, subject, body, dkim_conf, tls=True, d
         print('Sending...')
 
         if dsn:
-            smtp.send_message(msg, mail_from, [recipient], mail_options=['RET=HDRS', f'ENVID={
-                int(random.random() * 10e6)}'], rcpt_options=['NOTIFY=SUCCESS,FAILURE,DELAY'])
+            smtp.send_message(msg, mail_from, [recipient], mail_options=['RET=HDRS', f'ENVID = {
+                int(random.random() * 10e6)}'], rcpt_options=['NOTIFY = SUCCESS, FAILURE, DELAY'])
         else:
             smtp.send_message(msg, mail_from, [recipient])
 
