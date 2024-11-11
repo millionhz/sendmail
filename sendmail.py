@@ -56,7 +56,7 @@ def sendmail(sender, recipient, mail_from, subject, body, dkim_conf, tls=True, d
     print(msg)
 
     with smtplib.SMTP(mx) as smtp:
-        helo_domain = "sender." + domain_from_address(mail_from)
+        # helo_domain = "sender." + domain_from_address(mail_from)
 
         if tls:
             _, exts = smtp.ehlo()
@@ -64,7 +64,7 @@ def sendmail(sender, recipient, mail_from, subject, body, dkim_conf, tls=True, d
                 print('Initiating STARTTLS')
                 smtp.starttls()
 
-        smtp.ehlo(helo_domain)
+        smtp.ehlo()
         print('Sending...')
 
         if dsn:
