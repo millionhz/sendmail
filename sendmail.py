@@ -68,10 +68,36 @@ def sendmail(sender, recipient, mail_from, subject, body, dkim_conf, tls=True, d
         print('Sending...')
 
         if dsn:
-            smtp.send_message(msg, mail_from, [recipient], mail_options=['RET=HDRS', f'ENVID = {
-                int(random.random() * 10e6)}'], rcpt_options=['NOTIFY = SUCCESS, FAILURE, DELAY'])
+            smtp.send_message(msg, mail_from, [recipient], mail_options=['RET=HDRS', f'ENVID= {
+                int(random.random() * 10e6)}'], rcpt_options=['NOTIFY= SUCCESS, FAILURE, DELAY'])
         else:
             smtp.send_message(msg, mail_from, [recipient])
+
+
+def send_all_recipients(sender, mail_from, subject, body, dkim_conf):
+    recipients = [
+        # add recipients here
+    ]
+
+    for recipient in recipients:
+        print(recipient)
+
+        tls = True
+        if '@aol.com' in recipient or '@yahoo.com' in recipient:
+            tls = False
+
+        try:
+            sendmail(
+                sender=sender,
+                recipient=recipient,
+                tls=tls,
+                mail_from=mail_from,
+                subject=subject,
+                body=body,
+                dkim_conf=dkim_conf
+            )
+        except Exception as e:
+            print(e)
 
 
 if __name__ == '__main__':
