@@ -32,7 +32,7 @@ def sendmail(sender, recipient, mail_from, subject, body, dkim_conf, tls=True, d
     msg = EmailMessage()
 
     # setup headers here
-    msg['Message-ID'] = generate_message_id(domain_from_address(sender))
+    msg['Message-ID'] = generate_message_id(domain_from_address(mail_from))
     msg['Date'] = utils.formatdate(localtime=True)
     msg['Subject'] = subject
     msg['From'] = sender
