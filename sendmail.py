@@ -1,5 +1,6 @@
 import smtplib
 from email.message import EmailMessage
+from email.header import Header
 from email import utils
 from dns import resolver
 import dkim
@@ -24,6 +25,9 @@ def get_mx(address):
     records = resolver.resolve(domain, 'MX')
     return str(records[0].exchange)
 
+
+def mime_encode(text):
+    return Header(text, 'utf-8').encode()
 
 def sendmail(sender, recipient, mail_from, subject, body, dkim_conf, tls=True, dsn=False):
     mx = get_mx(recipient)
