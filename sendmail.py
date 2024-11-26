@@ -29,7 +29,8 @@ def get_mx(address):
 def mime_encode(text):
     return Header(text, 'utf-8').encode()
 
-def sendmail(sender, recipient, mail_from, subject, body, dkim_conf, tls=True, dsn=False):
+
+def sendmail(sender, recipient, mail_from, subject, body, dkim_conf=None, tls=True, dsn=False):
     mx = get_mx(recipient)
 
     # create mail
@@ -72,16 +73,13 @@ def sendmail(sender, recipient, mail_from, subject, body, dkim_conf, tls=True, d
         print('Sending...')
 
         if dsn:
-            smtp.send_message(msg, mail_from, [recipient], mail_options=['RET=HDRS', f'ENVID= {
-                int(random.random() * 10e6)}'], rcpt_options=['NOTIFY= SUCCESS, FAILURE, DELAY'])
+            smtp.send_message(msg, mail_from, [recipient], mail_options=['RET=HDRS', f'ENVID={
+                              int(random.random() * 10e6)}'], rcpt_options=['NOTIFY=SUCCESS,FAILURE,DELAY'])
         else:
             smtp.send_message(msg, mail_from, [recipient])
 
 
-def send_all_recipients(sender, mail_from, subject, body, dkim_conf):
-    recipients = [
-        # add recipients here
-    ]
+def send_all_recipients(sender, recipients, mail_from, subject, body, dkim_conf):
 
     for recipient in recipients:
         print(recipient)
